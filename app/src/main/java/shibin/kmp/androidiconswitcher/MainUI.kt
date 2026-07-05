@@ -2,6 +2,7 @@ package shibin.kmp.androidiconswitcher
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -15,10 +16,12 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -42,7 +45,9 @@ fun MainUI(
             CurrentIconCard(state)
         }
         item {
-            AvailableIconsGrid(icons = icons)
+            AvailableIconsGrid(
+                icons = icons, currentIcon = state.currentIcon
+            )
         }
     }
 }
@@ -75,7 +80,8 @@ fun CurrentIconCard(state: DashboardState) {
 
 @Composable
 fun AvailableIconsGrid(
-    icons: List<IconInfo>
+    icons: List<IconInfo>,
+    currentIcon: IconInfo?,
 ) {
     Text(text = "Available Icons", fontWeight = FontWeight.Bold)
     Spacer(Modifier.height(10.dp))
@@ -86,20 +92,34 @@ fun AvailableIconsGrid(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         items(icons) { icon ->
-            ElevatedCard {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        painter = painterResource(icon.previewIcon),
+            Box {
+                ElevatedCard {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(icon.previewIcon),
+                            contentDescription = null,
+                            modifier = Modifier.size(64.dp)
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(icon.name)
+                    }
+
+                }
+                if (currentIcon?.name == icon.name) {
+
+                    Icon(
+                        painter = painterResource(R.drawable.check_circle),
                         contentDescription = null,
-                        modifier = Modifier.size(64.dp)
+                        tint = Color(0xFF4CAF50),
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(8.dp)
                     )
-                    Spacer(Modifier.height(8.dp))
-                    Text(icon.name)
                 }
             }
         }
