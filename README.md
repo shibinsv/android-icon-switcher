@@ -5,6 +5,8 @@ A personal Android project exploring **dynamic launcher icon switching** using `
 The goal of this project is to learn, experiment, and eventually evolve it into a reusable Android library/SDK.
 
 ---
+<img width="1774" height="887" alt="icon-switcher-l" src="https://github.com/user-attachments/assets/ba315097-4967-4aaa-b857-793ec86bb9a4" />
+
 
 ## About
 
