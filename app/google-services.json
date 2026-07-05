@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191534471900",
+    "project_id": "android-icon-switcher",
+    "storage_bucket": "android-icon-switcher.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191534471900:android:a531f67fc76fb99083b219",
+        "android_client_info": {
+          "package_name": "shibin.kmp.androidiconswitcher"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMOyzA8b1_OYqrArgNJ_vTQ052q8CBHO8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
