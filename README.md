@@ -1,90 +1,81 @@
-# 🚀 Android Icon Switcher SDK
+<div align="center">
 
-A lightweight, extensible Android SDK that enables **dynamic launcher icon switching** without publishing a new APK.
+# 🚀 Android Icon Switcher
 
-The SDK observes a remote data source (currently Firestore) and automatically updates the launcher icon using Android Activity Aliases.
+### Dynamic Launcher Icon Switching for Android
 
-> ⚡ Change your app icon remotely. No app update required.
+Change your Android application's launcher icon **remotely** without publishing a new APK.
+
+Built with Kotlin, Jetpack Compose, Builder Pattern, StateFlow and a provider-based architecture.
+
+> **Work in Progress** – Designed to evolve into a production-ready Android SDK.
 
 ---
 
-## ✨ Features
+</div>
 
-- 🎨 Dynamic launcher icon switching
-- 🔥 Live Firestore integration
-- 🏗 Builder Pattern API
-- 📡 Observable SDK state using StateFlow
-- 💾 Current icon persistence
+## ✨ Why Android Icon Switcher?
+
+Android supports multiple launcher icons using **Activity Aliases**, but managing them dynamically can quickly become complex.
+
+Android Icon Switcher abstracts all that complexity behind a clean, extensible API.
+
+Instead of writing PackageManager code yourself, simply provide a remote provider (Firestore today, REST tomorrow), and let the SDK handle the rest.
+
+---
+
+# Features
+
+### Current
+
+- ✅ Dynamic launcher icon switching
+- ✅ Activity Alias management
+- ✅ Builder Pattern API
+- ✅ Live Firestore provider
+- ✅ Repository architecture
 - ✅ Icon validation
-- 🎯 Activity Alias management
-- 🪵 Event listener callbacks
-- 🧩 Modular architecture
-- 🛠 Easily extendable with custom providers
+- ✅ StateFlow dashboard state
+- ✅ Event listener callbacks
+- ✅ SharedPreferences persistence
+- ✅ Jetpack Compose sample application
+
+### Planned
+
+- 🔄 REST API Provider
+- 🔄 Firebase Remote Config Provider
+- 🔄 Lifecycle-aware SDK
+- 🔄 Kotlin DSL
+- 🔄 Analytics
+- 🔄 Compose SDK module
+- 🔄 Maven Central publishing
 
 ---
 
-## Demo
+# Demo
 
-| Dashboard | Launcher Icon |
-|-----------|---------------|
-| SDK Dashboard | Dynamic App Icon |
-| Firestore Connected | Auto Updates |
+## Dashboard
 
-*(Screenshots coming soon)*
+- Current active launcher icon
+- Available icons
+- Firestore status
+- SDK event logs
+- Live updates using StateFlow
+
+*(Screenshots / GIF coming soon)*
 
 ---
 
 # Installation
 
-### Step 1
-
-Add the dependency
-
 ```gradle
-implementation("io.github.shibin:icon-switcher:<version>")
+implementation("io.github.shibin:icon-switcher:<latest-version>")
 ```
 
 ---
 
-### Step 2
+# Quick Start
 
-Configure Activity Aliases
-
-```xml
-<activity
-    android:name=".MainActivity"
-    android:exported="true"/>
-
-<activity-alias
-    android:name=".DefaultIcon"
-    android:enabled="true"
-    android:targetActivity=".MainActivity"
-    android:icon="@mipmap/ic_launcher">
-
-    <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-    </intent-filter>
-
-</activity-alias>
-
-<activity-alias
-    android:name=".BlueIcon"
-    android:enabled="false"
-    android:targetActivity=".MainActivity"
-    android:icon="@mipmap/ic_launcher_blue">
-
-    <intent-filter>
-        <action android:name="android.intent.action.MAIN"/>
-        <category android:name="android.intent.category.LAUNCHER"/>
-    </intent-filter>
-
-</activity-alias>
-```
-
----
-
-# Usage
+## Configure your icons
 
 ```kotlin
 val config = IconConfig(
@@ -104,7 +95,13 @@ val config = IconConfig(
         )
     )
 )
+```
 
+---
+
+## Initialize the SDK
+
+```kotlin
 IconSwitcher.builder(applicationContext)
     .config(config)
     .provider(
@@ -112,25 +109,28 @@ IconSwitcher.builder(applicationContext)
             FirebaseFirestore.getInstance()
         )
     )
-    .listener(object : IconSwitcherListener {
+    .listener(
+        object : IconSwitcherListener {
 
-        override fun onIconChanged(icon: IconInfo) {
-            Log.d("SDK", "Changed to ${icon.name}")
+            override fun onIconChanged(icon: IconInfo) {
+                Log.d("SDK", "Changed to ${icon.name}")
+            }
+
+            override fun onError(error: Throwable) {
+                Log.e("SDK", "Error", error)
+            }
         }
-
-        override fun onError(error: Throwable) {
-            Log.e("SDK", "Error", error)
-        }
-
-    })
-    .enableLogging(true)
-    .enableCaching(true)
+    )
     .build()
 ```
 
+That's it.
+
+The SDK automatically observes the provider and updates the launcher icon whenever the remote value changes.
+
 ---
 
-# Firestore Structure
+# Firestore Configuration
 
 Collection
 
@@ -144,70 +144,67 @@ Document
 icon
 ```
 
-Fields
+Field
 
 ```
-activeIcon : "blue"
+activeIcon
 ```
 
-Changing
+Example
 
-```
-default
-```
-
-to
-
-```
-red
+```json
+{
+  "activeIcon": "blue"
+}
 ```
 
-automatically updates the launcher icon on every connected device.
+Updating the field immediately changes the launcher icon.
 
 ---
 
-# SDK Architecture
+# Architecture
 
 ```
-                App
+                     Application
 
-                 │
+                           │
 
-                 ▼
+                           ▼
 
-        IconSwitcher Builder
+                 IconSwitcher Builder
 
-                 │
+                           │
 
-                 ▼
+                           ▼
 
-          IconSwitcher SDK
+                    IconSwitcher SDK
 
-                 │
+                           │
 
-      ┌──────────┼──────────┐
-      │          │          │
-      ▼          ▼          ▼
+             ┌─────────────┼─────────────┐
+             │             │             │
 
- Repository   Validator   Preferences
+             ▼             ▼             ▼
 
-      │
+      Repository      Validator     Preferences
 
-      ▼
+             │
 
- Alias Manager
+             ▼
 
-      │
+       Alias Manager
 
-      ▼
+             │
 
- PackageManager
+             ▼
 
-      │
+      Android PackageManager
 
-      ▼
+             │
 
- Launcher Icon
+             ▼
+
+      Activity Alias Switching
 ```
 
 ---
@@ -227,130 +224,147 @@ icon-switcher
 ├── result
 ├── validator
 └── IconSwitcher.kt
+
+sample-app
+│
+├── dashboard
+├── firestore
+└── demo data
 ```
 
 ---
 
-# Current Features
+# Public API
 
-- Dynamic launcher icon switching
-- Firestore provider
-- Builder Pattern
-- StateFlow support
-- Repository architecture
-- Preferences storage
-- Icon validation
-- Result API
-- Listener API
+Current public entry point
+
+```kotlin
+IconSwitcher.builder(context)
+```
+
+Builder
+
+```kotlin
+.config(...)
+.provider(...)
+.listener(...)
+.enableLogging(...)
+.enableCaching(...)
+.build()
+```
 
 ---
 
-# Planned Features
+# SDK State
 
-- REST API Provider
+The SDK exposes a live `StateFlow` that can be observed directly from Jetpack Compose.
+
+```kotlin
+val state by IconSwitcher.dashboardState.collectAsStateWithLifecycle()
+```
+
+Useful for building dashboards, debug screens, or analytics without additional wiring.
+
+---
+
+# Event Listener
+
+Receive SDK events through a listener.
+
+```kotlin
+override fun onIconChanged(icon: IconInfo)
+
+override fun onAlreadyApplied(icon: IconInfo)
+
+override fun onInvalidIcon(requested: String)
+
+override fun onSwitchFailed(requested: String)
+
+override fun onError(error: Throwable)
+```
+
+---
+
+# Providers
+
+Current
+
+- Firestore Provider
+
+Upcoming
+
+- REST Provider
 - Firebase Remote Config Provider
-- Lifecycle Awareness
-- Kotlin DSL
-- Compose Extensions
-- Analytics
-- Scheduler
 - Custom Providers
-- Dashboard UI
-- Unit Tests
-- GitHub Actions
-- Maven Central Publishing
 
----
-
-# Example Dashboard
-
-```
-Android Icon Switcher SDK
-
-🟢 Connected
-
-Current Icon
-
-Blue
-
-Available Icons
-
-Default
-Blue
-Red
-
-Firestore
-
-Current Value
-
-blue
-
-SDK Logs
-
-Initialized
-
-Connected
-
-Icon Changed
-```
-
----
-
-# Why this SDK?
-
-Instead of shipping multiple APKs or waiting for Play Store updates, this SDK allows you to remotely control your application's launcher icon.
-
-Perfect for
-
-- Seasonal branding
-- Holiday themes
-- Promotions
-- Feature launches
-- A/B testing
-- White-label applications
-- Enterprise deployments
-
----
-
-# Requirements
-
-- Android API 24+
-- Kotlin
-- AndroidX
-- Activity Alias support
+The provider architecture allows the SDK to support multiple remote configuration sources without changing the core engine.
 
 ---
 
 # Roadmap
 
+## Phase 1
+
 - [x] Core Engine
 - [x] Alias Manager
-- [x] Repository Pattern
 - [x] Preferences
-- [x] Firestore Provider
-- [x] Builder Pattern
-- [x] Listener API
+
+## Phase 2
+
+- [x] Repository
+- [x] Validator
 - [x] Result API
+
+## Phase 3
+
+- [x] Listener API
+- [x] Builder Pattern
 - [x] Dashboard State
-- [ ] Lifecycle Support
+
+## Phase 4
+
+- [ ] Lifecycle Awareness
 - [ ] Kotlin DSL
+- [ ] Logging Improvements
+- [ ] Analytics
+
+## Phase 5
+
 - [ ] REST Provider
 - [ ] Remote Config Provider
 - [ ] Compose SDK
-- [ ] Testing Module
+
+## Phase 6
+
+- [ ] Unit Tests
+- [ ] CI/CD
 - [ ] Maven Central
 
 ---
 
+# Motivation
 
-## Author
+Typical launcher icon switching implementations require developers to:
 
-**Shibin**
+- Manage multiple Activity Aliases
+- Work directly with PackageManager
+- Handle persistence
+- Validate icon names
+- Listen for remote updates
 
-Senior Android Developer
-
-GitHub: https://github.com/<your-github>
+Android Icon Switcher brings these concerns together in a reusable SDK with a clean API.
 
 ---
 
-⭐ If you found this project useful, consider giving it a star!
+# Technologies
+
+- Kotlin
+- Android SDK
+- Jetpack Compose
+- Kotlin Coroutines
+- StateFlow
+- Firebase Firestore
+- Builder Pattern
+- Repository Pattern
+
+---
