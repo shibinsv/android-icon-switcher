@@ -38,44 +38,12 @@ fun MainUI(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-
-        item {
-            DashboardHeader()
-        }
-
         item {
             CurrentIconCard(state)
         }
-
-        item {
-            Text(
-                text = "Available Icons",
-            )
-        }
-
         item {
             AvailableIconsGrid(icons = icons)
         }
-
-        item {
-            FirestoreCard(state)
-        }
-    }
-}
-
-
-@Composable
-fun DashboardHeader() {
-
-    Column {
-
-        Text(
-            text = "Android Icon Switcher SDK",
-        )
-
-        Text(
-            text = "Live launcher icon switching powered by Firestore",
-        )
     }
 }
 
@@ -87,36 +55,20 @@ fun CurrentIconCard(state: DashboardState) {
     ) {
 
         Column(
-            modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text("Current Active Icon", fontWeight = FontWeight.Bold)
+            Text("Current Launcher Icon", fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(16.dp))
             state.currentIcon?.let { icon ->
                 Image(
                     painter = painterResource(icon.previewIcon),
                     contentDescription = icon.name
                 )
-                Spacer(Modifier.height(12.dp))
-                Text(icon.name)
-                Text(icon.alias)
-                Spacer(Modifier.height(12.dp))
             }
-        }
-    }
-}
-
-@Composable
-fun FirestoreCard(state: DashboardState) {
-
-    ElevatedCard(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Text("Firestore", fontWeight = FontWeight.Bold)
-            Spacer(Modifier.height(12.dp))
-            Text("Current Value")
-            Text(state.currentIcon?.name ?: "")
-            Spacer(Modifier.height(16.dp))
-            Text("Status")
-            Text("🟢 Connected")
         }
     }
 }
@@ -125,33 +77,28 @@ fun FirestoreCard(state: DashboardState) {
 fun AvailableIconsGrid(
     icons: List<IconInfo>
 ) {
-
+    Text(text = "Available Icons", fontWeight = FontWeight.Bold)
+    Spacer(Modifier.height(10.dp))
     LazyVerticalGrid(
         columns = GridCells.Adaptive(110.dp),
         modifier = Modifier.height(340.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-
         items(icons) { icon ->
-
             ElevatedCard {
-
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
                     Image(
                         painter = painterResource(icon.previewIcon),
                         contentDescription = null,
                         modifier = Modifier.size(64.dp)
                     )
-
                     Spacer(Modifier.height(8.dp))
-
                     Text(icon.name)
                 }
             }
